@@ -1,0 +1,1184 @@
+<!-- Licensed under GNU General Public License v3.0 -->
+<!-- Made by 2025 EDYOU Systems -->
+<!-- https://www.gnu.org/licenses/gpl-3.0.en.html -->
+
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftType - Learn to type faster</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='2' width='28' height='28' rx='4' fill='%23d4af37'/><rect x='4' y='4' width='24' height='24' rx='3' fill='%230a0a0a'/><rect x='7' y='8' width='18' height='16' rx='2' stroke='%23d4af37' stroke-width='2' fill='none'/><line x1='10' y1='12' x2='12' y2='12' stroke='%23d4af37' stroke-width='2'/><line x1='14' y1='12' x2='16' y2='12' stroke='%23d4af37' stroke-width='2'/><line x1='18' y1='12' x2='20' y2='12' stroke='%23d4af37' stroke-width='2'/><line x1='22' y1='12' x2='22' y2='12' stroke='%23d4af37' stroke-width='2'/><line x1='10' y1='16' x2='13' y2='16' stroke='%23d4af37' stroke-width='2'/><line x1='15' y1='16' x2='17' y2='16' stroke='%23d4af37' stroke-width='2'/><line x1='19' y1='16' x2='22' y2='16' stroke='%23d4af37' stroke-width='2'/><line x1='12' y1='20' x2='20' y2='20' stroke='%23d4af37' stroke-width='2'/></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #d4af37;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #0a0a0a;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .lang-btn, .tips-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover, .tips-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .lang-btn {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .lang-btn.active {
+            background: #d4af37;
+            color: #0a0a0a;
+        }
+
+        .tips-btn {
+            background: transparent;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .tips-btn:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        h2 .highlight {
+            color: #d4af37;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 60px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .typing-area {
+            background: #141414;
+            border-radius: 12px;
+            padding: 60px;
+            max-width: 900px;
+            width: 100%;
+            min-height: 200px;
+            position: relative;
+            animation: scaleIn 0.6s ease-out 0.4s both;
+            transition: transform 0.3s ease;
+        }
+
+        .typing-area:hover {
+            transform: translateY(-2px);
+        }
+
+        .text-display {
+            font-size: 28px;
+            line-height: 1.8;
+            letter-spacing: 1px;
+            color: #4a4a4a;
+            user-select: none;
+            margin-bottom: 20px;
+        }
+
+        .text-display span {
+            transition: color 0.1s;
+        }
+
+        .text-display span.correct {
+            color: #e0e0e0;
+        }
+
+        .text-display span.incorrect {
+            color: #ff4444;
+            background: #ff444420;
+        }
+
+        .text-display span.current {
+            position: relative;
+        }
+
+        .text-display span.current::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #d4af37;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes slideOutLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .input-area {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .start-prompt {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .restart-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 40px auto 0;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        .restart-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .restart-btn:hover svg {
+            transform: rotate(180deg);
+        }
+
+        .restart-btn:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results h3 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .results-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.5s ease-out 0.1s both;
+        }
+
+        .results-message.excellent {
+            color: #10b981;
+        }
+
+        .results-message.good {
+            color: #3b82f6;
+        }
+
+        .results-message.practice {
+            color: #f59e0b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            animation: fadeInUp 0.5s ease-out both;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 600;
+            color: #d4af37;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hint {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+            margin-top: 40px;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        footer {
+            padding: 20px 40px;
+            text-align: left;
+        }
+
+        .copyright {
+            color: #555;
+            font-size: 12px;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .copyright a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .copyright a:hover {
+            color: #d4af37;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .tip-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tip-header.slide-out-left {
+            animation: slideOutLeft 0.3s ease-out forwards;
+        }
+
+        .tip-header.slide-in-right {
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+
+        .tip-header.slide-out-right {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
+
+        .tip-header.slide-in-left {
+            animation: slideInLeft 0.3s ease-out forwards;
+        }
+
+        .tip-counter {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .tip-icon {
+            width: 64px;
+            height: 64px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .tip-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .tip-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .tip-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ccc;
+            text-align: center;
+        }
+
+        .tip-content.slide-out-left {
+            animation: slideOutLeft 0.3s ease-out forwards;
+        }
+
+        .tip-content.slide-in-right {
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+
+        .tip-content.slide-out-right {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
+
+        .tip-content.slide-in-left {
+            animation: slideInLeft 0.3s ease-out forwards;
+        }
+
+        .modal-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .tip-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: #d4af37;
+            width: 24px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="6" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="2"/>
+                    <line x1="10" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+                    <line x1="14" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="2"/>
+                    <line x1="18" y1="8" x2="18" y2="8" stroke="currentColor" stroke-width="2"/>
+                    <line x1="6" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="11" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="15" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="8" y1="16" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>SwiftType</h1>
+                <p>Learn to type faster</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="lang-btn active" data-lang="de">Deutsch</button>
+            <button class="lang-btn" data-lang="en">English</button>
+            <button class="tips-btn" onclick="openTips()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Tips
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <h2>Test Your <span class="highlight">Typing</span> Speed</h2>
+        <p class="subtitle">Type the text as fast and accurately as possible</p>
+
+        <div class="typing-area">
+            <div class="text-display" id="textDisplay"></div>
+            <input type="text" class="input-area" id="inputArea" autocomplete="off">
+            <div class="start-prompt" id="startPrompt">Click here and start typing...</div>
+        </div>
+
+        <button class="restart-btn" onclick="restart()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="21 3 21 8 16 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Restart</span>
+        </button>
+
+        <p class="hint">Press Tab or Enter to restart</p>
+    </main>
+
+    <footer>
+        <p class="copyright">Made by EDYOU SYSTEMS™</p>
+    </footer>
+
+    <div class="modal" id="tipsModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeTips()">×</button>
+            <div class="tip-header">
+                <div class="tip-counter" id="tipCounter">Tip 1 / 6</div>
+                <div class="tip-icon" id="tipIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <line x1="6" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="10" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="14" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18" y1="8" x2="18" y2="8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="11" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="15" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="8" y1="16" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3 class="tip-title" id="tipTitle"></h3>
+            </div>
+            <p class="tip-content" id="tipContent"></p>
+            <div class="modal-navigation">
+                <button class="nav-btn" onclick="prevTip()" id="prevBtn">← Back</button>
+                <div class="tip-dots" id="tipDots"></div>
+                <button class="nav-btn" onclick="nextTip()" id="nextBtn">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const texts = { // Texte von Copilot weil fr kein bock darauf hatte selber 50 Sätze zu schreiben 👈(ﾟヮﾟ👈)
+            de: [
+                "Der schnelle braune Fuchs springt über den faulen Hund und läuft weiter durch den dichten Wald.",
+                "Übung macht den Meister, besonders wenn es um das Zehnfingersystem geht.",
+                "Die Kunst des schnellen Tippens erfordert Geduld, Ausdauer und regelmäßiges Training.",
+                "Moderne Technologie ermöglicht es uns, effizienter zu arbeiten und zu kommunizieren.",
+                "Konzentration und Genauigkeit sind wichtiger als reine Geschwindigkeit beim Tippen.",
+                "Das Erlernen neuer Fähigkeiten erweitert unseren Horizont und öffnet neue Türen.",
+                "Die digitale Revolution hat unsere Art zu arbeiten und zu leben grundlegend verändert.",
+                "Kreativität und Innovation sind der Schlüssel zum Erfolg in der modernen Welt.",
+                "Teamarbeit und Kommunikation spielen eine entscheidende Rolle in jedem Projekt.",
+                "Die Zukunft gehört denjenigen, die sich ständig weiterbilden und anpassen.",
+                "Programmieren ist eine der wichtigsten Fähigkeiten des 21. Jahrhunderts.",
+                "Künstliche Intelligenz wird viele Bereiche unseres Lebens revolutionieren.",
+                "Nachhaltigkeit und Umweltschutz sind zentrale Herausforderungen unserer Zeit.",
+                "Bildung ist der Grundstein für persönliche und berufliche Entwicklung.",
+                "Die Globalisierung verbindet Menschen und Kulturen auf der ganzen Welt.",
+                "Gesundheit und Wohlbefinden sollten immer an erster Stelle stehen.",
+                "Zeit ist die wertvollste Ressource, die wir haben und nicht zurückbekommen können.",
+                "Positive Einstellung und Motivation führen zum Erreichen unserer Ziele.",
+                "Fehler sind wichtige Lernmöglichkeiten auf dem Weg zum Erfolg.",
+                "Die Macht der Gewohnheit kann unser Leben zum Besseren oder Schlechteren verändern.",
+                "Respekt und Toleranz sind fundamental für ein harmonisches Zusammenleben.",
+                "Disziplin und Beständigkeit übertreffen oft reines Talent auf lange Sicht.",
+                "Neugier und Wissensdurst treiben den Fortschritt der Menschheit voran.",
+                "Jeder Mensch hat einzigartige Talente und Fähigkeiten, die es zu entdecken gilt.",
+                "Die Balance zwischen Arbeit und Freizeit ist entscheidend für Lebensqualität.",
+                "Technische Kompetenz wird in fast allen Berufsfeldern immer wichtiger.",
+                "Kritisches Denken hilft uns, Informationen richtig zu bewerten und Entscheidungen zu treffen.",
+                "Empathie und emotionale Intelligenz sind Schlüsselkompetenzen im zwischenmenschlichen Bereich.",
+                "Der erste Schritt ist oft der schwierigste, aber auch der wichtigste.",
+                "Veränderung ist die einzige Konstante in unserem Leben und sollte umarmt werden.",
+                "Networking und Beziehungen öffnen oft Türen zu neuen Möglichkeiten.",
+                "Selbstreflexion ermöglicht persönliches Wachstum und kontinuierliche Verbesserung.",
+                "Zeitmanagement ist eine essenzielle Fähigkeit in der heutigen schnelllebigen Welt.",
+                "Die Fähigkeit zu kommunizieren unterscheidet gute von großartigen Führungspersönlichkeiten.",
+                "Mut bedeutet nicht die Abwesenheit von Angst, sondern trotz Angst zu handeln.",
+                "Lifelong Learning ist kein Luxus mehr, sondern eine Notwendigkeit geworden.",
+                "Kleine Schritte führen zu großen Veränderungen, wenn man konsequent bleibt.",
+                "Die digitale Transformation verändert Geschäftsmodelle in allen Branchen fundamental.",
+                "Achtsamkeit und Meditation können Stress reduzieren und Fokus verbessern.",
+                "Diversität und Inklusion bereichern Teams und fördern Innovation.",
+                "Authentizität und Integrität schaffen Vertrauen in beruflichen und privaten Beziehungen.",
+                "Die Cloud-Technologie ermöglicht flexible und skalierbare Lösungen für Unternehmen.",
+                "Datenanalyse und Statistik werden zu unverzichtbaren Werkzeugen in vielen Bereichen.",
+                "Kreislaufwirtschaft ist ein vielversprechender Ansatz für nachhaltige Produktion.",
+                "Remote-Arbeit bietet Flexibilität, erfordert aber auch Selbstdisziplin und Organisation.",
+                "Cybersecurity wird immer wichtiger in unserer vernetzten digitalen Welt.",
+                "Blockchain-Technologie hat das Potenzial, viele Industrien zu transformieren.",
+                "Soft Skills wie Kommunikation und Teamfähigkeit werden oft unterschätzt.",
+                "Continuous Improvement sollte das Ziel jeder Person und Organisation sein.",
+                "Die richtige Morgenroutine kann den Ton für einen produktiven Tag setzen.",
+                "Feedback anzunehmen und zu geben ist essentiell für persönliches Wachstum.",
+                "Agilität und Anpassungsfähigkeit sind entscheidend in einem sich schnell ändernden Umfeld.",
+                "Mentoren und Vorbilder können uns inspirieren und auf unserem Weg leiten.",
+                "Die Kunst des Zuhörens ist genauso wichtig wie die Fähigkeit zu sprechen.",
+                "Visualisierung und klare Zielsetzung erhöhen die Wahrscheinlichkeit des Erfolgs erheblich.",
+                "Resilienz hilft uns, Rückschläge zu überwinden und gestärkt daraus hervorzugehen."
+            ],
+            en: [
+                "The quick brown fox jumps over the lazy dog and runs through the dense forest.",
+                "Practice makes perfect, especially when it comes to touch typing skills.",
+                "The art of fast typing requires patience, persistence, and regular training.",
+                "Modern technology enables us to work and communicate more efficiently.",
+                "Concentration and accuracy are more important than pure speed in typing.",
+                "Learning new skills expands our horizons and opens new doors for us.",
+                "The digital revolution has fundamentally changed the way we work and live.",
+                "Creativity and innovation are the keys to success in the modern world.",
+                "Teamwork and communication play a crucial role in every project.",
+                "The future belongs to those who continuously learn and adapt.",
+                "Programming is one of the most important skills of the 21st century.",
+                "Artificial intelligence will revolutionize many areas of our lives.",
+                "Sustainability and environmental protection are central challenges of our time.",
+                "Education is the foundation for personal and professional development.",
+                "Globalization connects people and cultures around the world.",
+                "Health and well-being should always come first in our priorities.",
+                "Time is the most valuable resource we have and cannot get back.",
+                "Positive attitude and motivation lead to achieving our goals.",
+                "Mistakes are important learning opportunities on the path to success.",
+                "The power of habit can change our lives for better or worse.",
+                "Respect and tolerance are fundamental for harmonious coexistence.",
+                "Discipline and consistency often surpass pure talent in the long run.",
+                "Curiosity and thirst for knowledge drive human progress forward.",
+                "Every person has unique talents and abilities waiting to be discovered.",
+                "The balance between work and leisure is crucial for quality of life.",
+                "Technical competence is becoming increasingly important in almost all fields.",
+                "Critical thinking helps us evaluate information and make informed decisions.",
+                "Empathy and emotional intelligence are key competencies in interpersonal relations.",
+                "The first step is often the hardest, but also the most important one.",
+                "Change is the only constant in our lives and should be embraced.",
+                "Networking and relationships often open doors to new opportunities.",
+                "Self-reflection enables personal growth and continuous improvement.",
+                "Time management is an essential skill in today's fast-paced world.",
+                "The ability to communicate distinguishes good from great leaders.",
+                "Courage does not mean the absence of fear, but acting despite it.",
+                "Lifelong learning is no longer a luxury, but has become a necessity.",
+                "Small steps lead to big changes when you remain consistent.",
+                "Digital transformation is fundamentally changing business models across all industries.",
+                "Mindfulness and meditation can reduce stress and improve focus.",
+                "Diversity and inclusion enrich teams and foster innovation.",
+                "Authenticity and integrity build trust in professional and personal relationships.",
+                "Cloud technology enables flexible and scalable solutions for businesses.",
+                "Data analysis and statistics are becoming indispensable tools in many areas.",
+                "Circular economy is a promising approach for sustainable production.",
+                "Remote work offers flexibility, but also requires self-discipline and organization.",
+                "Cybersecurity is becoming increasingly important in our connected digital world.",
+                "Blockchain technology has the potential to transform many industries.",
+                "Soft skills like communication and teamwork are often underestimated.",
+                "Continuous improvement should be the goal of every person and organization.",
+                "The right morning routine can set the tone for a productive day.",
+                "Accepting and giving feedback is essential for personal growth.",
+                "Agility and adaptability are crucial in a rapidly changing environment.",
+                "Mentors and role models can inspire us and guide us on our journey.",
+                "The art of listening is just as important as the ability to speak.",
+                "Visualization and clear goal setting significantly increase the likelihood of success.",
+                "Resilience helps us overcome setbacks and emerge stronger from them."
+            ]
+        };
+
+        const tips = {
+            de: [
+                {
+                    title: "Die Grundposition",
+                    content: "Platziere deine Finger auf der Grundreihe: Linke Hand auf A-S-D-F, rechte Hand auf J-K-L-Ö. Deine Zeigefinger ruhen auf F und J - diese Tasten haben kleine Erhebungen zur Orientierung.",
+                    title: "Die Grundposition",
+                    content: "Platziere deine Finger auf der Grundreihe: Linke Hand auf A-S-D-F, rechte Hand auf J-K-L-Ö. Deine Zeigefinger ruhen auf F und J - diese Tasten haben kleine Erhebungen zur Orientierung.",
+                    icon: '<rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><line x1="6" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="2"/><line x1="10" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/><line x1="14" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="2"/><line x1="18" y1="8" x2="18" y2="8" stroke="currentColor" stroke-width="2"/><line x1="6" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/><line x1="11" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/><line x1="15" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2"/><line x1="8" y1="16" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>',
+                    color: '#d4af37'
+                },
+                {
+                    title: "Fingerzuordnung",
+                    content: "Jeder Finger ist für bestimmte Tasten zuständig. Der kleine Finger bedient die äußeren Tasten, der Zeigefinger die mittleren. Bewege immer nur den benötigten Finger und kehre zur Grundposition zurück.",
+                    icon: '<g stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g>',
+                    color: '#10b981'
+                },
+                {
+                    title: "Nicht auf die Tastatur schauen",
+                    content: "Das Ziel ist blindes Tippen. Schaue auf den Bildschirm, nicht auf deine Finger. Anfangs ist es schwer, aber mit Übung entwickelst du ein Muskelgedächtnis.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" stroke-width="2"/>',
+                    color: '#3b82f6'
+                },
+                {
+                    title: "Genauigkeit vor Geschwindigkeit",
+                    content: "Tippe langsam und präzise. Geschwindigkeit kommt mit der Zeit automatisch. Fehler zu korrigieren kostet mehr Zeit als langsam und richtig zu tippen.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+                    color: '#8b5cf6'
+                },
+                {
+                    title: "Regelmäßig üben",
+                    content: "Übe täglich 15-30 Minuten. Kurze, regelmäßige Übungseinheiten sind effektiver als lange, seltene Sessions. Konsistenz ist der Schlüssel zum Erfolg.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="2" fill="currentColor"/>',
+                    color: '#ec4899'
+                },
+                {
+                    title: "Richtige Haltung",
+                    content: "Sitze aufrecht, Füße flach auf dem Boden. Die Handgelenke sollten leicht schweben, nicht auf dem Tisch aufliegen. Eine gute Haltung verhindert Ermüdung und Verletzungen.",
+                    icon: '<path d="M12 2L2 7v10c0 5.5 4.5 10 10 10s10-4.5 10-10V7l-10-5z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+                    color: '#f97316'
+                }
+            ],
+            en: [
+                {
+                    title: "Home Row Position",
+                    content: "Place your fingers on the home row: Left hand on A-S-D-F, right hand on J-K-L-;. Your index fingers rest on F and J - these keys have small bumps for orientation.",
+                    icon: '<rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><line x1="6" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="2"/><line x1="10" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/><line x1="14" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="2"/><line x1="18" y1="8" x2="18" y2="8" stroke="currentColor" stroke-width="2"/><line x1="6" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/><line x1="11" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/><line x1="15" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2"/><line x1="8" y1="16" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>',
+                    color: '#d4af37'
+                },
+                {
+                    title: "Finger Assignment",
+                    content: "Each finger is responsible for specific keys. The pinky handles the outer keys, the index finger the middle ones. Always move only the needed finger and return to the home position.",
+                    icon: '<g stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></g>',
+                    color: '#10b981'
+                },
+                {
+                    title: "Don't Look at the Keyboard",
+                    content: "The goal is touch typing. Look at the screen, not at your fingers. It's difficult at first, but with practice you'll develop muscle memory.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" stroke-width="2"/>',
+                    color: '#3b82f6'
+                },
+                {
+                    title: "Accuracy over Speed",
+                    content: "Type slowly and precisely. Speed comes automatically over time. Correcting mistakes takes more time than typing slowly and correctly.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+                    color: '#8b5cf6'
+                },
+                {
+                    title: "Practice Regularly",
+                    content: "Practice 15-30 minutes daily. Short, regular practice sessions are more effective than long, infrequent ones. Consistency is the key to success.",
+                    icon: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="2" fill="currentColor"/>',
+                    color: '#ec4899'
+                },
+                {
+                    title: "Proper Posture",
+                    content: "Sit upright, feet flat on the floor. Wrists should hover slightly, not rest on the desk. Good posture prevents fatigue and injuries.",
+                    icon: '<path d="M12 2L2 7v10c0 5.5 4.5 10 10 10s10-4.5 10-10V7l-10-5z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+                    color: '#f97316'
+                }
+            ]
+        };
+
+        let currentLang = 'de';
+        let currentText = '';
+        let currentPosition = 0;
+        let startTime = null;
+        let errors = 0;
+        let isTestActive = false;
+        let currentTip = 0;
+
+        const textDisplay = document.getElementById('textDisplay');
+        const inputArea = document.getElementById('inputArea');
+        const startPrompt = document.getElementById('startPrompt');
+
+        function getRandomText() {
+            const langTexts = texts[currentLang];
+            return langTexts[Math.floor(Math.random() * langTexts.length)];
+        }
+
+        function displayText() {
+            currentText = getRandomText();
+            textDisplay.innerHTML = currentText.split('').map((char, idx) => 
+                `<span data-index="${idx}">${char}</span>`
+            ).join('');
+            updateCursor();
+        }
+
+        function updateCursor() {
+            document.querySelectorAll('.text-display span').forEach((span, idx) => {
+                span.classList.remove('current');
+                if (idx === currentPosition) {
+                    span.classList.add('current');
+                }
+            });
+        }
+
+        function handleInput(e) {
+            if (!isTestActive) {
+                isTestActive = true;
+                startTime = Date.now();
+                startPrompt.style.display = 'none';
+            }
+
+            const typed = inputArea.value;
+            const spans = document.querySelectorAll('.text-display span');
+            
+            // Resetet alle spans
+            spans.forEach(span => {
+                span.classList.remove('correct', 'incorrect');
+            });
+
+            errors = 0;
+            
+            // Überprüft jeden getippten Buchstaben
+            for (let i = 0; i < typed.length; i++) {
+                if (i < currentText.length) {
+                    if (typed[i] === currentText[i]) {
+                        spans[i].classList.add('correct');
+                    } else {
+                        spans[i].classList.add('incorrect');
+                        errors++;
+                    }
+                }
+            }
+
+            currentPosition = typed.length;
+            updateCursor();
+
+            // Beendet den test wenn der text fertig getippt ist
+            if (currentPosition >= currentText.length) {
+                finishTest();
+            }
+        }
+
+        function finishTest() {
+            isTestActive = false;
+            inputArea.disabled = true;
+            
+            const endTime = Date.now();
+            const timeInMinutes = (endTime - startTime) / 60000;
+            const wordsTyped = currentText.split(' ').length;
+            const wpm = Math.round(wordsTyped / timeInMinutes);
+            const accuracy = Math.round(((currentText.length - errors) / currentText.length) * 100);
+            const cpm = Math.round(currentText.length / timeInMinutes);
+
+            const resultsText = currentLang === 'de' ? 'Test abgeschlossen!' : 'Test completed!';
+            const accuracyText = currentLang === 'de' ? 'Genauigkeit' : 'Accuracy';
+            const errorsText = currentLang === 'de' ? 'Fehler' : 'Errors';
+
+            // Bewertung wird auf WPM und Genauigkeit basiert wenn es mal funktionieren würde (┬┬﹏┬┬)
+            let message = '';
+            let messageClass = '';
+            
+            if (wpm >= 60 && accuracy >= 95) {
+                message = currentLang === 'de' ? 'Exzellent! Du bist ein Tipp-Meister!' : 'Excellent! You\'re a typing master!';
+                messageClass = 'excellent';
+            } else if (wpm >= 40 && accuracy >= 90) {
+                message = currentLang === 'de' ? 'Sehr gut! Weiter so!' : 'Very good! Keep it up!';
+                messageClass = 'good';
+            } else if (wpm >= 25 && accuracy >= 80) {
+                message = currentLang === 'de' ? 'Guter Fortschritt! Bleib dran!' : 'Good progress! Keep practicing!';
+                messageClass = 'good';
+            } else {
+                message = currentLang === 'de' ? 'Übung macht den Meister! Versuch es nochmal!' : 'Practice makes perfect! Try again!';
+                messageClass = 'practice';
+            }
+
+            textDisplay.innerHTML = `
+                <div class="results">
+                    <h3>${resultsText}</h3>
+                    <p class="results-message ${messageClass}">${message}</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-label">WPM</div>
+                            <div class="stat-value">${wpm}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">${accuracyText}</div>
+                            <div class="stat-value">${accuracy}%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">CPM</div>
+                            <div class="stat-value">${cpm}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">${errorsText}</div>
+                            <div class="stat-value">${errors}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function restart() {
+            currentPosition = 0;
+            errors = 0;
+            isTestActive = false;
+            startTime = null;
+            startPrompt.style.display = 'block';
+            inputArea.value = '';
+            inputArea.disabled = false;
+            displayText();
+            inputArea.focus();
+        }
+
+        function changeLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            restart();
+        }
+
+        function openTips() {
+            currentTip = 0;
+            displayTip();
+            document.getElementById('tipsModal').classList.add('active');
+        }
+
+        function closeTips() {
+            document.getElementById('tipsModal').classList.remove('active');
+        }
+
+        function displayTip() {
+            const tip = tips[currentLang][currentTip];
+            const tipHeader = document.querySelector('.tip-header');
+            const tipContent = document.getElementById('tipContent');
+            const tipIcon = document.getElementById('tipIcon');
+            const tipTitle = document.getElementById('tipTitle');
+            
+            document.getElementById('tipCounter').textContent = `Tip ${currentTip + 1} / 6`;
+            tipTitle.textContent = tip.title;
+            tipTitle.style.color = tip.color;
+            tipContent.textContent = tip.content;
+            
+            tipIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="color: ${tip.color}">${tip.icon}</svg>`;
+            
+            document.getElementById('prevBtn').disabled = currentTip === 0;
+            document.getElementById('nextBtn').disabled = currentTip === 5;
+
+            const dotsHtml = tips[currentLang].map((_, idx) => 
+                `<div class="dot ${idx === currentTip ? 'active' : ''}"></div>`
+            ).join('');
+            document.getElementById('tipDots').innerHTML = dotsHtml;
+        }
+
+        function nextTip() {
+            if (currentTip < 5) {
+                const tipHeader = document.querySelector('.tip-header');
+                const tipContent = document.getElementById('tipContent');
+                
+
+                tipHeader.classList.add('slide-out-left');
+                tipContent.classList.add('slide-out-left');
+                
+                setTimeout(() => {
+                    currentTip++;
+                    displayTip();
+                    
+
+                    tipHeader.classList.remove('slide-out-left');
+                    tipContent.classList.remove('slide-out-left');
+                    
+
+                    tipHeader.classList.add('slide-in-right');
+                    tipContent.classList.add('slide-in-right');
+                    
+                    setTimeout(() => {
+                        tipHeader.classList.remove('slide-in-right');
+                        tipContent.classList.remove('slide-in-right');
+                    }, 300);
+                }, 300);
+            }
+        }
+
+        function prevTip() {
+            if (currentTip > 0) {
+                const tipHeader = document.querySelector('.tip-header');
+                const tipContent = document.getElementById('tipContent');
+                
+
+                tipHeader.classList.add('slide-out-right');
+                tipContent.classList.add('slide-out-right');
+                
+                setTimeout(() => {
+                    currentTip--;
+                    displayTip();
+                    
+
+                    tipHeader.classList.remove('slide-out-right');
+                    tipContent.classList.remove('slide-out-right');
+                    
+
+                    tipHeader.classList.add('slide-in-left');
+                    tipContent.classList.add('slide-in-left');
+                    
+                    setTimeout(() => {
+                        tipHeader.classList.remove('slide-in-left');
+                        tipContent.classList.remove('slide-in-left');
+                    }, 300);
+                }, 300);
+            }
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => changeLang(btn.dataset.lang));
+        });
+
+        inputArea.addEventListener('input', handleInput);
+
+        textDisplay.addEventListener('click', () => {
+            inputArea.focus();
+        });
+
+        inputArea.addEventListener('focus', () => {
+            startPrompt.style.display = 'none';
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+            }
+            if (e.key === 'Tab' || e.key === 'Enter') {
+                const modal = document.getElementById('tipsModal');
+                if (!modal.classList.contains('active')) {
+                    restart();
+                }
+            }
+            if (e.key === 'Escape') {
+                closeTips();
+            }
+        });
+
+        // Automatisch fokussieren beim Laden der WP
+        window.addEventListener('load', () => {
+            inputArea.focus();
+        });
+
+        displayText();
+        inputArea.focus(); // Sofort fokussieren auf das Eingabefeld
+    </script>
+</body>
+</html>
