@@ -202,6 +202,39 @@
             animation: blink 1s infinite;
         }
 
+        .time-counter {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(212,175,55,0.08);
+            color: #d4af37;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            backdrop-filter: blur(6px);
+            pointer-events: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .caps-indicator {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #888;
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+            transition: color 0.15s, background 0.15s;
+            pointer-events: none;
+        }
+
+        .caps-indicator.active {
+            color: #ff4d4f;
+            background: rgba(255,77,79,0.08);
+        }
+
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0; }
@@ -410,6 +443,13 @@
             font-weight: 600;
             color: #d4af37;
             animation: pulse 2s ease-in-out infinite;
+        }
+
+        .results-time {
+            color: #ccc;
+            font-size: 16px;
+            margin-bottom: 14px;
+            text-align: center;
         }
 
         .hint {
@@ -652,6 +692,7 @@
 
         <div class="typing-area">
             <div class="text-display" id="textDisplay"></div>
+            <div id="timeCounter" class="time-counter"><span id="timeText">00:00</span><span id="capsIndicator" class="caps-indicator">Caps</span></div>
             <input type="text" class="input-area" id="inputArea" autocomplete="off">
             <div class="start-prompt" id="startPrompt">Click here and start typing...</div>
         </div>
@@ -908,10 +949,23 @@
         let errors = 0;
         let isTestActive = false;
         let currentTip = 0;
+        let timerInterval = null;
 
-        const textDisplay = document.getElementById('textDisplay');
-        const inputArea = document.getElementById('inputArea');
-        const startPrompt = document.getElementById('startPrompt');
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        function updateTimeCounter() {
+            const el = document.getElementById('timeCounter');
+            if (!startTime) {
+                el.querySelector('#timeText').textContent = '00:00';
+                return;
+            }
+            el.querySelector('#timeText').textContent = formatTime(Date.now() - startTime);
+        }
 
         function getRandomText() {
             const langTexts = texts[currentLang];
@@ -940,34 +994,33 @@
                 isTestActive = true;
                 startTime = Date.now();
                 startPrompt.style.display = 'none';
+                updateTimeCounter();
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimeCounter, 250);
             }
 
             const typed = inputArea.value;
             const spans = document.querySelectorAll('.text-display span');
             
-            // Resetet alle spans
             spans.forEach(span => {
                 span.classList.remove('correct', 'incorrect');
             });
 
             errors = 0;
-            
-            // Überprüft jeden getippten Buchstaben
+
             for (let i = 0; i < typed.length; i++) {
-                if (i < currentText.length) {
-                    if (typed[i] === currentText[i]) {
-                        spans[i].classList.add('correct');
-                    } else {
-                        spans[i].classList.add('incorrect');
-                        errors++;
-                    }
+                if (i >= currentText.length) break;
+                if (typed[i] === currentText[i]) {
+                    spans[i].classList.add('correct');
+                } else {
+                    spans[i].classList.add('incorrect');
+                    errors++;
                 }
             }
 
             currentPosition = typed.length;
             updateCursor();
 
-            // Beendet den test wenn der text fertig getippt ist
             if (currentPosition >= currentText.length) {
                 finishTest();
             }
@@ -978,7 +1031,14 @@
             inputArea.disabled = true;
             
             const endTime = Date.now();
-            const timeInMinutes = (endTime - startTime) / 60000;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            const durationMs = endTime - startTime;
+            const formattedDuration = formatTime(durationMs);
+
+            const timeInMinutes = durationMs / 60000;
             const wordsTyped = currentText.split(' ').length;
             const wpm = Math.round(wordsTyped / timeInMinutes);
             const accuracy = Math.round(((currentText.length - errors) / currentText.length) * 100);
@@ -987,8 +1047,8 @@
             const resultsText = currentLang === 'de' ? 'Test abgeschlossen!' : 'Test completed!';
             const accuracyText = currentLang === 'de' ? 'Genauigkeit' : 'Accuracy';
             const errorsText = currentLang === 'de' ? 'Fehler' : 'Errors';
+            const timeText = currentLang === 'de' ? 'Zeit' : 'Time';
 
-            // Bewertung wird auf WPM und Genauigkeit basiert wenn es mal funktionieren würde (┬┬﹏┬┬)
             let message = '';
             let messageClass = '';
             
@@ -1037,6 +1097,11 @@
             errors = 0;
             isTestActive = false;
             startTime = null;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timeText').textContent = '00:00';
             startPrompt.style.display = 'block';
             inputArea.value = '';
             inputArea.disabled = false;
@@ -1170,6 +1235,31 @@
             if (e.key === 'Escape') {
                 closeTips();
             }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            const caps = e.getModifierState && e.getModifierState('CapsLock');
+            const el = document.getElementById('capsIndicator');
+            if (caps) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            const caps = e.getModifierState && e.getModifierState('CapsLock');
+            const el = document.getElementById('capsIndicator');
+            if (caps) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            const el = document.getElementById('capsIndicator');
+            el.classList.remove('active');
         });
 
         // Automatisch fokussieren beim Laden der WP
