@@ -1090,6 +1090,14 @@
                     </div>
                 </div>
             `;
+            // Register these computed results with the tamper-guard (if present)
+            try {
+                if (window.__resultGuard && typeof window.__resultGuard.setExpected === 'function') {
+                    window.__resultGuard.setExpected({ wpm, accuracy, cpm, errors });
+                }
+            } catch (e) {
+                console.warn('Result guard registration failed', e);
+            }
         }
 
         function restart() {
@@ -1270,5 +1278,84 @@
         displayText();
         inputArea.focus(); // Sofort fokussieren auf das Eingabefeld
     </script>
+
+        <script>
+        (function(){
+            let expected = null;
+            let container = null;
+            let observer = null;
+            let lastAlert = 0;
+            const ALERT_THROTTLE_MS = 3000;
+            function now(){ return Date.now(); }
+            function restore() {
+                if (!expected) return;
+                if (!container) container = document.querySelector('.results');
+                if (!container) return;
+                const vals = container.querySelectorAll('.stat-value');
+                const keys = ['wpm','accuracy','cpm','errors'];
+                vals.forEach((el, idx) => {
+                    const key = keys[idx];
+                    if (!el || expected[key] === undefined) return;
+                    const expText = key === 'accuracy' ? String(expected[key]) + '%' : String(expected[key]);
+                    if (el.textContent.trim() !== expText) {
+                        el.textContent = expText;
+                        el.style.transition = 'background 0.25s';
+                        el.style.background = 'rgba(255,0,0,0.08)';
+                        setTimeout(() => el.style.background = 'transparent', 700);
+                    }
+                });
+            }
+            function handleTamper(mutations){
+                let tampered = false;
+                for (const m of mutations) {
+                    if (m.type === 'characterData' || m.type === 'childList' || m.type === 'attributes') { tampered = true; break; }
+                }
+                if (tampered) {
+                    restore();
+                    if (now() - lastAlert > ALERT_THROTTLE_MS) {
+                        lastAlert = now();
+                        try { alert('CHEATER!!!!!'); } catch(e) { console.warn('Alert blocked', e); }
+                        console.warn('Tampering detected and results restored.', mutations);
+                    }
+                }
+            }
+            function startObserving(){
+                container = document.querySelector('.results');
+                if (!container) return;
+                if (observer) observer.disconnect();
+                observer = new MutationObserver(handleTamper);
+                observer.observe(container, { childList: true, subtree: true, characterData: true, attributes: true });
+            }
+            window.__resultGuard = {
+                setExpected(obj) {
+                    expected = obj;
+                    startObserving();
+                    restore();
+                },
+                restore
+            };
+            setInterval(() => {
+                if (!document.querySelector('.results')) return;
+                if (!expected) return;
+                startObserving();
+                const containerNow = document.querySelector('.results');
+                const vals = containerNow.querySelectorAll('.stat-value');
+                if (vals.length >= 4) {
+                    const [wpmEl, accEl, cpmEl, errsEl] = vals;
+                    const cond = wpmEl.textContent.trim() === String(expected.wpm) &&
+                                 accEl.textContent.trim() === String(expected.accuracy) + '%' &&
+                                 cpmEl.textContent.trim() === String(expected.cpm) &&
+                                 errsEl.textContent.trim() === String(expected.errors);
+                    if (!cond) {
+                        restore();
+                        if (now() - lastAlert > ALERT_THROTTLE_MS) {
+                            lastAlert = now();
+                            try { alert('CHEATER!!!!!'); } catch(e) { console.warn('Alert blocked', e); }
+                        }
+                    }
+                }
+            }, 1200);
+        })();
+        </script>
 </body>
 </html>
